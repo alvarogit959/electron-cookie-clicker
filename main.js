@@ -1,10 +1,13 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+//npm install
+//npm install -g @angular/cli@21.0.0 
+//npm install -g @angular/cli@latest  
 //npm run
 //npm run start
 
 //npm start en una terminal
-//npm run electron en otra terminal
+//npm run electron:dev         en otra terminal
 let mainWindow;
 
 function createWindow() {
@@ -13,7 +16,7 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true,
+      contextIsolation: false,
       webSecurity: false
     }
   });
@@ -28,7 +31,7 @@ function createWindow() {
     mainWindow.webContents.reloadIgnoringCache();
   } else {
     // En producción: cargar archivo construido
-    mainWindow.loadFile(path.join(__dirname, 'dist/electron-cookie-clicker/browser/index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'dist/electron-cookie-clicker/src/app/app.html'));
   }
 
   mainWindow.on('closed', () => {
