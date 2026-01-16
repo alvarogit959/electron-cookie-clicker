@@ -10,7 +10,10 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "serve:ssr:electron-cookie-clicker": "node dist/electron-cookie-clicker/server/server.mjs"
+    "serve:ssr:electron-cookie-clicker": "node dist/electron-cookie-clicker/server/server.mjs",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm start\" \"wait-on http://localhost:4200 && electron .\"",
+    "dev": "npm run electron:dev"
   },
   "prettier": {
     "printWidth": 100,
@@ -47,9 +50,13 @@
     "@types/node": "^20.17.19",
     "concurrently": "^9.2.1",
     "electron": "^39.2.7",
+    "electron-builder": "^26.4.0",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8",
-    "wait-on": "^9.0.3"
+    "wait-on": "^9.0.3",
+    "electron": "^25.0.0",
+    "concurrently": "^8.0.0",
+    "wait-on": "^7.0.0"
   }
 }
