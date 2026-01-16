@@ -6,7 +6,7 @@ const path = require('path');
 //npm run
 //npm run start
 
-//npm start en una terminal
+//npm start                    en una terminal
 //npm run electron:dev         en otra terminal
 let mainWindow;
 
