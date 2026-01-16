@@ -2,6 +2,9 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 //npm run
 //npm run start
+
+//npm start en una terminal
+//npm run electron en otra terminal
 let mainWindow;
 
 function createWindow() {
@@ -11,14 +14,18 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      webSecurity: false
     }
   });
 
   // En desarrollo: cargar desde localhost
   if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
-    mainWindow.loadURL('http://localhost:4200');
+    mainWindow.loadURL('http://localhost:4200',{
+                                                  extraHeaders: 'pragma: no-cache\n'
+                                                });
     mainWindow.webContents.openDevTools();
+    mainWindow.webContents.session.clearCache();
+    mainWindow.webContents.reloadIgnoringCache();
   } else {
     // En producción: cargar archivo construido
     mainWindow.loadFile(path.join(__dirname, 'dist/electron-cookie-clicker/browser/index.html'));
