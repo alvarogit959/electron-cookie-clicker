@@ -10,5 +10,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onMain: (channel, listener) => {
     const allowed = ['from-main', 'update-display', 'timer', 'disable-button'];
     if (allowed.includes(channel)) ipcRenderer.on(channel, listener);
-  }
+  },
+  navigateToScores: () => ipcRenderer.send('puntuaciones-button', 'scores')
 });
