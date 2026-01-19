@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.html',
+  templateUrl: './scores.html',
 })
 export class App implements AfterViewInit {
   protected readonly title = signal('electron-cookie-clicker');
@@ -27,9 +27,21 @@ export class App implements AfterViewInit {
           const display = document.getElementById('display-text');
           if (display) display.textContent = message;
         });
+        api.onMain('from-main', (_event: any, message: string) => {
+          const timer = document.getElementById('timer-text');
+          if (timer) (timer as HTMLElement).textContent = message;
+        });
+        api.onMain('disable-button', () => {
+          const btn = document.getElementById('click-button') as HTMLButtonElement | null;
+          if (btn) btn.disabled = true;
+        });
       }
     } catch (e) {
       console.error('Error registrando listener de update-display', e);
     }
+
+
+
+
   }
 }

@@ -9,15 +9,40 @@ const path = require('path');
 //npm start                    en una terminal
 //npm run electron:dev         en otra terminal
 
-//TO DO
-//Contador de tiempo
-//Primer click lo activa
-//tras 30 segundos se desactiva el boton
-//abrir puntuaciones tras finalizar
-//
+//TO DO:
+//abrir puntuaciones tras finalizar         ARREGLAR puntuaciones-button
+//guardar puntuaciones
+//configurar servidor
+//mongodb?
 
 let mainWindow;
 let clickCount = 0;
+// Temporizador principal (30s)
+function timerDown() {
+  console.log('timerDown iniciado');
+  let time = 5;               //AJUSTAR TIEMPO AL FINAL DEL TIMER TAMBIEN
+  // Enviar valor inicial inmediatamente
+  if (mainWindow && mainWindow.webContents) mainWindow.webContents.send('from-main', `Tiempo restante: ${time}`);
+  console.log(`Tiempo restante: ${time}`);
+
+  const timer = setInterval(() => {
+    time--;
+    //if(time>=0){} 
+    if (mainWindow && mainWindow.webContents) mainWindow.webContents.send('from-main', `Tiempo restante: ${time}`);
+    console.log(`Tiempo restante: ${time}`);
+  }, 1000);
+
+  setTimeout(() => {
+    clearInterval(timer);
+    if (mainWindow && mainWindow.webContents) {
+      mainWindow.webContents.send('from-main', 'Tiempo restante: 0');
+      mainWindow.webContents.send('update-display', `¡Tiempo terminado! Has hecho ${clickCount} clicks.`);
+      console.log(`¡Tiempo terminado! Has hecho ${clickCount} clicks.`);
+      mainWindow.webContents.send('disable-button');
+    }
+  }, 5000);
+}
+let starting=false;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -29,7 +54,9 @@ function createWindow() {
       webSecurity: false,
     },
   });
+
   ipcMain.on('click-button', (event, message) => {
+  if (starting===false){timerDown();starting=true}
     console.log('funciona el ipcMain', message);
 
     clickCount++;
@@ -60,6 +87,15 @@ function createWindow() {
     mainWindow = null;
   });
 }
+
+// Mostrar Scores:
+ipcMain.on('puntuaciones-button', (event, message) => {
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.send('navigate-to-scores');}
+});
+
+
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
