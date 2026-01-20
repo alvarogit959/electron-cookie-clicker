@@ -11,5 +11,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const allowed = ['from-main', 'update-display', 'timer', 'disable-button'];
     if (allowed.includes(channel)) ipcRenderer.on(channel, listener);
   },
-  navigateToScores: () => ipcRenderer.send('puntuaciones-button', 'scores')
+  navigateToScores: () => ipcRenderer.send('puntuaciones-button', 'scores'),
+  navigateToApp: () => ipcRenderer.send('return-button', 'app'),
+  minimizeWindow: () => ipcRenderer.send('minimize-window'),
+  closeWindow: () => ipcRenderer.send('close-window')
 });

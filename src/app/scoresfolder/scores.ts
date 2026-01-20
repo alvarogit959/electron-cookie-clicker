@@ -40,8 +40,40 @@ export class App implements AfterViewInit {
       console.error('Error registrando listener de update-display', e);
     }
 
+    // Minimize window
+    const minBtn = document.getElementById('min-window');
+    if (minBtn) {
+      minBtn.addEventListener('click', () => {
+        try {
+          (window as any).electronAPI.minimizeWindow();
+        } catch (e) {
+          console.error('Error minimizing window', e);
+        }
+      });
+    }
+    // Close window
+    const closeBtn = document.getElementById('close-window');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        try {
+          (window as any).electronAPI.closeWindow();
+        } catch (e) {
+          console.error('Error cerrando la ventana', e);
+        }
+      });
+    }
 
-
+    //Volver a app
+    const appBtn = document.getElementById('return-button');
+    if (appBtn) {
+      appBtn.addEventListener('click', () => {
+        try {
+          (window as any).electronAPI.navigateToApp();
+        } catch (e) {
+          console.error('Error abriendo ventana', e);
+        }
+      });
+    }
 
   }
 }

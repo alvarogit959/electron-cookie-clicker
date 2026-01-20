@@ -93,6 +93,11 @@ body {
   -webkit-app-region: no-drag;
   cursor: pointer;
 }
+#puntuaciones-button:hover {
+  transform: scale(1.1);
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+}
 #restart-button {
   display: flex;
   background-color: rgb(255, 255, 255);
@@ -144,12 +149,14 @@ body {
   -webkit-app-region: no-drag;
 }
 #click-button:hover {
-  background-color: rgb(155, 216, 155);
+ background-color: rgb(128, 104, 54);
+ transform: scale(1.1);
 }
 #click-button:active {
-  background-color: rgb(60, 100, 60);
+  background-color: rgb(87, 71, 36);
+  transform: scale(0.95);
 }
 #click-button:disabled {
-  background-color: rgb(200, 200, 200);
+  background-color: rgb(110, 106, 96);
   cursor: not-allowed;
 }

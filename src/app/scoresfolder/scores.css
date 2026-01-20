@@ -1,11 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+.content {
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.main {
+  border-radius: 2rem;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+  height: 42rem;
+  width: 43rem;
+  overflow: hidden;
+  background-image: url('../../../public/background.jpg');
+  background-position: top;
+  background-size: cover;
+  -webkit-app-region: drag;
+}
+.container {
+  margin-top: 4rem;
+  border-radius: 2rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 30rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.min-close {
+  display: flex;
+  justify-content: right;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  -webkit-app-region: no-drag;
+}
+#min-window {
+  background-color: rgb(255, 255, 255);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  margin-right: 0.2rem;
+  cursor: pointer;
+}
+#close-window {
+  background-color: rgb(255, 64, 64);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+#title {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  color: rgb(80, 54, 33);
+  font-family: 'Press Start 2P', cursive;
+}
+#puntuaciones{
+      font-size: 0.8rem;
+  margin-bottom: 1rem;
+  font-family: 'Press Start 2P', cursive;
+}
+#scores-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 0.5rem;
+  margin-bottom: 2rem;
+  height: 18rem;
+  width: 16rem;
+  background-color: rgb(255, 255, 255);
+  border-radius: 1rem;
+}
+.buttonsDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
 
-#main{display:flex;flex-direction: column;align-items:center;gap:20px;padding:20px;font-family:sans-serif;width:1200px;height:800px}
-.container{display:flex;flex-direction: column;align-items:center;justify-content: center;height:800px;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;}
-.timer{font-size:1.5rem;margin-bottom:8rem;}
-#display-text{display:flex;font-size:1.5rem;margin-bottom:2rem;}
-#click-button{background-color:rgb(88, 209, 88);justify-content: center;display: flex;align-items: center;border-radius: 1rem;
-    padding: 1rem;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 1.5rem;}
-#click-button:hover{background-color:rgb(155, 216, 155)}
-#click-button:active{background-color:rgb(60, 100, 60)}
-#click-button:disabled{background-color:rgb(200, 200, 200);cursor:not-allowed}
-
+#return-button {
+  display: flex;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  padding: 0.8rem;
+  font-size: 0.6rem;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 0rem;
+  font-family: 'Press Start 2P', cursive;
+  -webkit-app-region: no-drag;
+  border-radius: 1rem;
+}
+#return-button:hover {
+  transform: scale(1.1);
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+}

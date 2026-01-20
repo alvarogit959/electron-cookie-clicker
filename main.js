@@ -40,7 +40,7 @@ function timerDown() {
       mainWindow.webContents.send('from-main', 'Tiempo restante: 0');
       mainWindow.webContents.send(
         'update-display',
-        `¡Tiempo terminado! Has hecho ${clickCount} clicks.`,
+        `¡Tiempo terminado!\n Has hecho ${clickCount} clicks.`,
       );
       console.log(`¡Tiempo terminado! Has hecho ${clickCount} clicks.`);
       mainWindow.webContents.send('disable-button');
@@ -101,8 +101,11 @@ function createWindow() {
 
 function createScoresWindow() {
   mainWindow = new BrowserWindow({
-    width: 450,
-    height: 250,
+     width: 700,
+    height: 700,
+    resizable: false,
+    transparent: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -112,12 +115,35 @@ function createScoresWindow() {
   });
 }
 
+//Min window
+ipcMain.on('minimize-window', () => {
+  if (mainWindow) {
+    mainWindow.minimize();
+  }
+});
+
+//Close window
+ipcMain.on('close-window', () => {
+  if (mainWindow) {
+    mainWindow.close();
+  }
+  app.quit();
+  process.exit(0);
+  
+});
+
 // Mostrar Scores:
 ipcMain.on('puntuaciones-button', (event, message) => {
   if (mainWindow && mainWindow.webContents) {
     mainWindow.loadFile(path.join(__dirname, 'src/app/scoresfolder/scores.html'));
   }
 });
+//Volver a app
+ipcMain.on('return-button', (event, message) => {
+    mainWindow.loadFile(path.join(__dirname, 'src/app/homepage/app.html'));
+});
+
+
 
 app.whenReady().then(createWindow);
 
