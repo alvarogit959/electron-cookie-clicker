@@ -1,18 +1,19 @@
-<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="app.css" />
 <main class="main">
   <div class="container">
-    <h1 class="counter">Cookie clicker</h1>
-        <button id="puntuaciones-button" onclick="window.electronAPI.navigateToScores()">
-      PUNTUACIONES
-    </button>
-
+    <div class="min-close">
+      <button class="button" id="min-window" onclick="window.electronAPI.minimize()">_</button>
+      <button class="button" id="close-window" onclick="window.electronAPI.closeWindow()">X</button>
+    </div>
+    <h1 id="title">Cookie clicker</h1>
+    <div class="buttonsDiv">
+      <button id="puntuaciones-button" onclick="window.electronAPI.navigateToScores()">
+        Scores
+      </button>
+      <button id="restart-button">Reintentar</button>
+    </div>
     <div id="timer-text">Tiempo restante:30</div>
     <div id="display-text">Número de clicks: 0</div>
-    <button id="click-button">
-      CLICK
-    </button>
-
+    <button id="click-button">CLICK</button>
   </div>
 </main>
-
-

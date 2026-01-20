@@ -45,13 +45,16 @@ function timerDown() {
       console.log(`¡Tiempo terminado! Has hecho ${clickCount} clicks.`);
       mainWindow.webContents.send('disable-button');
     }
-  }, 5000);
+  }, 6000);
 }
 let starting = false;
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 700,
+    height: 700,
+    resizable: false,
+    transparent: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -59,7 +62,6 @@ function createWindow() {
       webSecurity: false,
     },
   });
-
 
   ipcMain.on('click-button', (event, message) => {
     if (starting === false) {
@@ -72,7 +74,7 @@ function createWindow() {
     console.log('clickCount:', clickCount);
 
     try {
-      mainWindow.webContents.send('update-display', 'Número de clicks: ' + clickCount);
+      mainWindow.webContents.send('update-display', 'Número de clicks:' + clickCount);
       console.log('Mensaje enviado al display');
     } catch (error) {
       console.error('Error al enviar el mensaje al renderer:', error);
@@ -84,7 +86,7 @@ function createWindow() {
     mainWindow.loadURL('http://localhost:4200', {
       extraHeaders: 'pragma: no-cache\n',
     });
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
     mainWindow.webContents.session.clearCache();
     mainWindow.webContents.reloadIgnoringCache();
   } else {
@@ -99,16 +101,16 @@ function createWindow() {
 
 function createScoresWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 450,
+    height: 250,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
       webSecurity: false,
     },
-  });}
-
+  });
+}
 
 // Mostrar Scores:
 ipcMain.on('puntuaciones-button', (event, message) => {
