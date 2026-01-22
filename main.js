@@ -100,13 +100,12 @@ function createWindow() {
 }
 
 function createScoresWindow() {
-  scoresWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
      width: 700,
     height: 700,
     resizable: false,
     transparent: true,
     frame: false,
-    parent: mainWindow,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -134,16 +133,29 @@ ipcMain.on('close-window', () => {
 });
 
 // Mostrar Scores:
-ipcMain.on('puntuaciones-button', (event, message) => {
+ipcMain.on('navigateToScores', (event, message) => {
   if (mainWindow && mainWindow.webContents) {
-    mainWindow.loadFile(path.join(__dirname, 'src/app/scoresfolder/scores.html'));
+    mainWindow.webContents.executeJavaScript(`
+      document.querySelector('[routerLink="/scores"]') ? 
+        window.location.hash = '#/scores' :
+        (document.getElementById('home-view').style.display = 'none',
+         document.getElementById('scores-view').style.display = 'block')
+    `);
   }
 });
-//Volver a app
-ipcMain.on('return-button', (event, message) => {
-    mainWindow.loadFile(path.join(__dirname, 'src/app/homepage/app.html'));
+
+// Volver a app
+ipcMain.on('navigateToApp', (event, message) => {
+    if (mainWindow && mainWindow.webContents) {
+      mainWindow.webContents.executeJavaScript(`
+        window.location.hash = '' || 
+        (document.getElementById('scores-view').style.display = 'none',
+         document.getElementById('home-view').style.display = 'block')
+      `);
+    }
 });
-//Second view:
+
+app.whenReady().then(createWindow);
 /*
   scoresWindow.on('closed', () => {
     scoresWindow = null;
