@@ -16,6 +16,7 @@ const path = require('path');
 //mongodb?
 
 let mainWindow;
+let scoresWindow = null;
 let clickCount = 0;
 // Temporizador principal (30s)
 function timerDown() {
@@ -62,17 +63,14 @@ function createWindow() {
       webSecurity: false,
     },
   });
-
   ipcMain.on('click-button', (event, message) => {
     if (starting === false) {
       timerDown();
       starting = true;
     }
     console.log('funciona el ipcMain', message);
-
     clickCount++;
     console.log('clickCount:', clickCount);
-
     try {
       mainWindow.webContents.send('update-display', 'Número de clicks:' + clickCount);
       console.log('Mensaje enviado al display');
@@ -80,7 +78,6 @@ function createWindow() {
       console.error('Error al enviar el mensaje al renderer:', error);
     }
   });
-
 //Cargar desde localhost en desarrollo    npm run electron:dev
   if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
     mainWindow.loadURL('http://localhost:4200', {
@@ -93,25 +90,42 @@ function createWindow() {
     // En producción: cargar archivo construido
     mainWindow.loadFile(path.join(__dirname, 'dist/electron-cookie-clicker/src/app/app.html'));
   }
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
 
 function createScoresWindow() {
-  mainWindow = new BrowserWindow({
-     width: 700,
+  if (scoresWindow && !scoresWindow.isDestroyed()) {
+    scoresWindow.focus();
+    return;
+  }
+
+  scoresWindow = new BrowserWindow({
+    width: 700,
     height: 700,
     resizable: false,
     transparent: true,
     frame: false,
+    parent: mainWindow,  // Hace que sea ventana hija
+    modal: true,         // Modal (opcional)
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
       webSecurity: false,
     },
+  });
+  if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
+    scoresWindow.loadURL('http://localhost:4200/scores.html', {
+      extraHeaders: 'pragma: no-cache\n',
+    });
+  } else {
+    scoresWindow.loadFile(path.join(__dirname, 'dist/electron-cookie-clicker/src/app/scores.html'));
+  }
+
+  scoresWindow.on('closed', () => {
+    scoresWindow = null;
   });
 }
 
@@ -133,15 +147,9 @@ ipcMain.on('close-window', () => {
 });
 
 // Mostrar Scores:
-ipcMain.on('navigateToScores', (event, message) => {
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.executeJavaScript(`
-      document.querySelector('[routerLink="/scores"]') ? 
-        window.location.hash = '#/scores' :
-        (document.getElementById('home-view').style.display = 'none',
-         document.getElementById('scores-view').style.display = 'block')
-    `);
-  }
+ipcMain.on('navigateToScores', () => {
+  console.log('Abriendo ventana de puntuaciones...');
+  createScoresWindow();
 });
 
 // Volver a app
