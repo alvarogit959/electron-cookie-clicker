@@ -26,26 +26,25 @@ const wsConnections = {
   admin: new Set()
 };
 //CONEXION MONGO
-mongoose.connect('mongodb+srv://alvarod_db_user:ChangeMe@clustervending.o3ch2ve.mongodb.net/vending?appName=ClusterVending')
+mongoose.connect('mongodb+srv://alvarod_db_user:ChangeMe@clustervending.o3ch2ve.mongodb.net/?appName=ClusterVending')
   .then(() => console.log('Conectado a MongoDB Atlas'))
   .catch(err => console.error('Error de conexión:', err));
 
 const scoreSchema = new mongoose.Schema({
   name: String, 
-  time: Number,  //No es Date, no
-  difficulty: String
+  clicks: Number
 });
 const Score = mongoose.model('Score', scoreSchema);
  
 app.get('/', (req, res) => {
-  res.send('Servidor Vending. Rutas: /scores');
+  res.send('Servidor scoresCoockies. Rutas: /cookies');
 });
 app.get('/health', (req, res) => {
   res.json({ status: 'running', timestamp: new Date() });
 });
 
 //Obtener todos los sudokus
-app.post('/scores', async (req, res) => {
+app.post('/cookies', async (req, res) => {
   try {
     const { name, time, difficulty } = req.body;
     //test luego borrar!
@@ -55,8 +54,7 @@ app.post('/scores', async (req, res) => {
     ///
     const newScore = new Score({
       name: name,
-      time: time,
-      difficulty: difficulty
+      clicks: clicks
     });
     
     await newScore.save();
@@ -71,7 +69,7 @@ app.post('/scores', async (req, res) => {
     res.status(500).json({ error: 'Error guardando' });
   }
 });
-app.get('/scores', async (req, res) => {
+app.get('/cookies', async (req, res) => {
   try {
     const scores = await Score.find().sort({ time: 1 });
     res.json(scores);
