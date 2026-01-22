@@ -81,7 +81,7 @@ function createWindow() {
     }
   });
 
-  //Cargar desde localhost en desarrollo    npm run electron:dev
+//Cargar desde localhost en desarrollo    npm run electron:dev
   if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
     mainWindow.loadURL('http://localhost:4200', {
       extraHeaders: 'pragma: no-cache\n',
@@ -100,12 +100,13 @@ function createWindow() {
 }
 
 function createScoresWindow() {
-  mainWindow = new BrowserWindow({
+  scoresWindow = new BrowserWindow({
      width: 700,
     height: 700,
     resizable: false,
     transparent: true,
     frame: false,
+    parent: mainWindow,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -142,7 +143,15 @@ ipcMain.on('puntuaciones-button', (event, message) => {
 ipcMain.on('return-button', (event, message) => {
     mainWindow.loadFile(path.join(__dirname, 'src/app/homepage/app.html'));
 });
-
+//Second view:
+/*
+  scoresWindow.on('closed', () => {
+    scoresWindow = null;
+  });
+ipcMain.on('close-second-window', () => {
+  if (scoresWindow) {
+    scoresWindow.close();
+  }});
 
 
 app.whenReady().then(createWindow);
@@ -151,7 +160,9 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-});
+}); 
+*/
+//Fin seocnd view
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {

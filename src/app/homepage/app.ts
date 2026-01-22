@@ -7,6 +7,7 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App implements AfterViewInit {
   protected readonly title = signal('electron-cookie-clicker');
+
 //Botón click
   ngAfterViewInit(): void {
     const btn = document.getElementById('click-button');

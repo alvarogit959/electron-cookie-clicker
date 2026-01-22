@@ -5,8 +5,9 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   templateUrl: './scores.html',
 })
-export class App implements AfterViewInit {
+export class Scores implements AfterViewInit {
   protected readonly title = signal('electron-cookie-clicker');
+
 //Botón click
   ngAfterViewInit(): void {
     const btn = document.getElementById('click-button');
@@ -62,18 +63,5 @@ export class App implements AfterViewInit {
         }
       });
     }
-
-    //Volver a app
-    const appBtn = document.getElementById('return-button');
-    if (appBtn) {
-      appBtn.addEventListener('click', () => {
-        try {
-          (window as any).electronAPI.navigateToApp();
-        } catch (e) {
-          console.error('Error abriendo ventana', e);
-        }
-      });
-    }
-
   }
 }
