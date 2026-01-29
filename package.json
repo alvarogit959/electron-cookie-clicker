@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4300",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -12,7 +12,7 @@
     "e2e": "ng e2e",
     "serve:ssr:electron-cookie-clicker": "node dist/electron-cookie-clicker/server/server.mjs",
     "electron": "electron .",
-    "electron:dev": "concurrently \"npm start\" \"wait-on http://localhost:4200 && electron . --dev\"",
+    "electron:dev": "concurrently \"npm start\" \"wait-on http://localhost:4300 && electron . --dev\"",
     "dev": "npm run electron:dev"
   },
   "prettier": {
@@ -38,9 +38,13 @@
     "@angular/platform-server": "^21.1.0",
     "@angular/router": "^21.1.0",
     "@angular/ssr": "^21.1.0",
-    "express": "^5.1.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.5",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@angular/build": "^21.1.0",
@@ -48,12 +52,12 @@
     "@angular/compiler-cli": "^21.1.0",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
-    "concurrently": "^8.0.0",
+    "concurrently": "^8.2.2",
     "electron": "^40.0.0",
     "electron-builder": "^26.4.0",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8",
-    "wait-on": "^7.0.0"
+    "wait-on": "^7.2.0"
   }
 }

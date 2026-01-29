@@ -80,7 +80,7 @@ function createWindow() {
   });
 //Cargar desde localhost en desarrollo    npm run electron:dev
   if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
-    mainWindow.loadURL('http://localhost:4200', {
+    mainWindow.loadURL('http://localhost:4300', {
       extraHeaders: 'pragma: no-cache\n',
     });
     mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -107,8 +107,8 @@ function createScoresWindow() {
     resizable: false,
     transparent: true,
     frame: false,
-    parent: mainWindow,  // Hace que sea ventana hija
-    modal: true,         // Modal (opcional)
+    parent: mainWindow,  //Hace que sea ventana hija
+    modal: true,         //ERROR?
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -117,11 +117,11 @@ function createScoresWindow() {
     },
   });
   if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
-    scoresWindow.loadURL('http://localhost:4200/scores.html', {
+    scoresWindow.loadURL('http://localhost:4300/scores.html', {
       extraHeaders: 'pragma: no-cache\n',
     });
   } else {
-    scoresWindow.loadFile(path.join(__dirname, 'dist/electron-cookie-clicker/src/app/scores.html'));
+    scoresWindow.loadFile(path.join(__dirname, 'dist/scores.html'));
   }
 
   scoresWindow.on('closed', () => {
@@ -130,49 +130,41 @@ function createScoresWindow() {
 }
 
 //Min window
+ipcMain.on('puntuaciones-button', (event, clicks) => {
+  console.log('Recibido: puntuaciones-button', clicks);
+  createScoresWindow(clicks);
+});
+ipcMain.on('return-button', () => {
+  console.log('Recibido: return-button');
+  if (scoresWindow && !scoresWindow.isDestroyed()) {
+    scoresWindow.close();
+  }
+  
+  if (mainWindow) {
+    mainWindow.focus();
+  }
+});
+
+//MIN
 ipcMain.on('minimize-window', () => {
   if (mainWindow) {
     mainWindow.minimize();
   }
 });
 
-//Close window
+//close
 ipcMain.on('close-window', () => {
   if (mainWindow) {
     mainWindow.close();
   }
-  app.quit();
-  process.exit(0);
-  
 });
 
-// Mostrar Scores:
-ipcMain.on('navigateToScores', () => {
-  console.log('Abriendo ventana de puntuaciones...');
-  createScoresWindow();
-});
-
-// Volver a app
-ipcMain.on('navigateToApp', (event, message) => {
-    if (mainWindow && mainWindow.webContents) {
-      mainWindow.webContents.executeJavaScript(`
-        window.location.hash = '' || 
-        (document.getElementById('scores-view').style.display = 'none',
-         document.getElementById('home-view').style.display = 'block')
-      `);
-    }
-});
-
-app.whenReady().then(createWindow);
-/*
-  scoresWindow.on('closed', () => {
-    scoresWindow = null;
-  });
-ipcMain.on('close-second-window', () => {
-  if (scoresWindow) {
+//close scores 
+ipcMain.on('close-scores-window', () => {
+  if (scoresWindow && !scoresWindow.isDestroyed()) {
     scoresWindow.close();
-  }});
-
+  }
+});
 
 app.whenReady().then(createWindow);
 
@@ -180,9 +172,7 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-}); 
-*/
-//Fin seocnd view
+});
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {

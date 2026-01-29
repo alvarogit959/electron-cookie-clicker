@@ -2,7 +2,7 @@
 <main class="main">
   <div class="container">
     <div class="min-close">
-      <button class="button" id="min-window" onclick="window.electronAPI.minimize()">_</button>
+      <button class="button" id="min-window" onclick="window.electronAPI.minimizeWindow()">_</button>
       <button class="button" id="close-window" onclick="window.electronAPI.closeWindow()">X</button>
     </div>
     <h1 id="title">Cookie clicker</h1>
@@ -10,7 +10,7 @@
       <button id="puntuaciones-button" onclick="window.electronAPI.navigateToScores()">
         Scores
       </button>
-      <button id="restart-button">Reintentar</button>
+      <button id="restart-button" onclick="restartGame()">Reintentar</button>
     </div>
     <div id="timer-text">Tiempo restante:30</div>
     <div id="display-text">Número de clicks: 0</div>
