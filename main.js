@@ -3,6 +3,7 @@ const path = require('path');
 //npm install
 //npm install -g @angular/cli@21.0.0
 //npm install -g @angular/cli@latest
+//npm install --save-dev @angular-devkit/build-angular
 //npm run
 //npm run start
 
@@ -117,7 +118,7 @@ function createScoresWindow() {
     },
   });
   if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
-    scoresWindow.loadURL('http://localhost:4300/scores.html', {
+    scoresWindow.loadURL('http://localhost:4300/#/scores', {
       extraHeaders: 'pragma: no-cache\n',
     });
   } else {
@@ -130,20 +131,25 @@ function createScoresWindow() {
 }
 
 //Min window
-ipcMain.on('puntuaciones-button', (event, clicks) => {
-  console.log('Recibido: puntuaciones-button', clicks);
-  createScoresWindow(clicks);
+ipcMain.on('puntuaciones-button', (event) => {
+  console.log('Recibido: puntuaciones-button');
+  createScoresWindow();
 });
-ipcMain.on('return-button', () => {
-  console.log('Recibido: return-button');
-  if (scoresWindow && !scoresWindow.isDestroyed()) {
-    scoresWindow.close();
-  }
-  
-  if (mainWindow) {
-    mainWindow.focus();
+
+
+ipcMain.on('restart-button', () => {
+  console.log('Reiniciando juego');
+
+  clickCount = 0;
+  starting = false;
+
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.send('update-display', 'Número de clicks: 0');
+    mainWindow.webContents.send('from-main', 'Tiempo restante: 30');
+    mainWindow.webContents.send('enable-button');
   }
 });
+
 
 //MIN
 ipcMain.on('minimize-window', () => {

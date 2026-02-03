@@ -1,5 +1,7 @@
-import { Component, signal, AfterViewInit } from '@angular/core';
+import { Component, signal, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+
 
 @Component({
   selector: 'app-root',
@@ -7,9 +9,11 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App implements AfterViewInit {
   protected readonly title = signal('electron-cookie-clicker');
-
+  platformId = inject(PLATFORM_ID);
 //Botón click
   ngAfterViewInit(): void {
+    //si no me da error ssr
+    if (!isPlatformBrowser(this.platformId)) return;
     const btn = document.getElementById('click-button');
     if (btn) {
       btn.addEventListener('click', () => {
@@ -36,6 +40,10 @@ export class App implements AfterViewInit {
           const btn = document.getElementById('click-button') as HTMLButtonElement | null;
           if (btn) btn.disabled = true;
         });
+        api.onMain('enable-button', () => {
+  const btn = document.getElementById('click-button') as HTMLButtonElement | null;
+  if (btn) btn.disabled = false;
+});
       }
     } catch (e) {
       console.error('Error registrando listener de update-display', e);
@@ -64,5 +72,29 @@ export class App implements AfterViewInit {
         }
       });
     }
+    //restart-button
+    const restartBtn = document.getElementById('restart-button');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => {
+        try {
+          (window as any).electronAPI.restartGame();
+        } catch (e) {
+          console.error('Error restart', e);
+        }
+      });
+    }
+
+    //puntuaciones-button
+    const scoresBtn = document.getElementById('puntuaciones-button');
+    if (scoresBtn) {
+      scoresBtn.addEventListener('click', () => {
+        try {
+          (window as any).electronAPI.openScores();
+        } catch (e) {
+          console.error('Error abriendo scores', e);
+        }
+      });
+    }
+
   }
 }

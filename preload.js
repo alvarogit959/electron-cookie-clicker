@@ -8,17 +8,20 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // Para recibir actualizaciones
   onMain: (channel, listener) => {
-    const allowed = ['from-main', 'update-display', 'timer', 'disable-button'];
+    const allowed = ['from-main', 'update-display', 'timer', 'disable-button','enable-button'];
     if (allowed.includes(channel)) {
       ipcRenderer.on(channel, listener);
     }
   },
-  
+  openScores: (clicks) => ipcRenderer.send('puntuaciones-button'),
+
+  restartGame: () => ipcRenderer.send('restart-button'),
   // Navegación
+  /*
   navigateToScores: () => {
     console.log('Enviando: puntuaciones-button');
     ipcRenderer.send('puntuaciones-button');
-  },
+  },*/
   
   navigateToApp: () => {
     console.log('Enviando: return-button');

@@ -1,21 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { App } from './scores';
+import { Scores } from './scores';
 
-describe('App', () => {
+describe('ScoresMenu', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [Scores],
     }).compileComponents();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  it('should create the ScoresMenu', () => {
+    const fixture = TestBed.createComponent(Scores);
+    const ScoresMenu = fixture.componentInstance;
+    expect(ScoresMenu).toBeTruthy();
   });
 
   it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(Scores);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('Hello, electron-cookie-clicker');
