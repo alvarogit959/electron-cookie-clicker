@@ -2,19 +2,11 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   platform: process.platform,
-  
   // Para el contador
-  clickButton: (message) => ipcRenderer.send('click-button', message),
-  
+ clickButton: (message) => ipcRenderer.send('click-button', message),
   // Para recibir actualizaciones
-  onMain: (channel, listener) => {
-    const allowed = ['from-main', 'update-display', 'timer', 'disable-button','enable-button'];
-    if (allowed.includes(channel)) {
-      ipcRenderer.on(channel, listener);
-    }
-  },
-  openScores: (clicks) => ipcRenderer.send('puntuaciones-button'),
-
+onMain: (channel, callback) => ipcRenderer.on(channel, callback),
+ openScores: () => ipcRenderer.send('puntuaciones-button'),
   restartGame: () => ipcRenderer.send('restart-button'),
   // Navegación
   /*
@@ -29,7 +21,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   
   // Control de ventanas
-  minimizeWindow: () => ipcRenderer.send('minimize-window'),
+ minimizeWindow: () => ipcRenderer.send('minimize-window'),
   closeWindow: () => ipcRenderer.send('close-window'),
   closeScoresWindow: () => ipcRenderer.send('close-scores-window'),
   

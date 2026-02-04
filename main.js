@@ -16,9 +16,16 @@ const path = require('path');
 //configurar servidor
 //mongodb?
 
+//SI DA ERROR PRIMERO: netstat -ano | findstr :4300       LUEGO: tasklist | findstr 12345
+
 let mainWindow;
 let scoresWindow = null;
 let clickCount = 0;
+function getUrl(route = '') {
+  const base = `http://localhost:4300`;
+  // Para Electron, usa hash navigation
+  return route ? `${base}/#${route}` : base;
+}
 // Temporizador principal (30s)
 function timerDown() {
   console.log('timerDown iniciado');
@@ -49,6 +56,7 @@ function timerDown() {
     }
   }, 6000);
 }
+
 let starting = false;
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -64,6 +72,23 @@ function createWindow() {
       webSecurity: false,
     },
   });
+
+  if (process.argv.includes('--dev')) {
+
+    mainWindow.loadURL(getUrl());
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
+
+  } else {
+
+    mainWindow.loadFile(
+      path.join(__dirname, 'dist/electron-cookie-clicker/browser/index.html')
+    );
+
+  }}
+
+
+
+
   ipcMain.on('click-button', (event, message) => {
     if (starting === false) {
       timerDown();
@@ -79,22 +104,8 @@ function createWindow() {
       console.error('Error al enviar el mensaje al renderer:', error);
     }
   });
-//Cargar desde localhost en desarrollo    npm run electron:dev
-  if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
-    mainWindow.loadURL('http://localhost:4300', {
-      extraHeaders: 'pragma: no-cache\n',
-    });
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
-    mainWindow.webContents.session.clearCache();
-    mainWindow.webContents.reloadIgnoringCache();
-  } else {
-    // En producción: cargar archivo construido
-    mainWindow.loadFile(path.join(__dirname, 'dist/electron-cookie-clicker/src/app/app.html'));
-  }
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-}
+
+
 
 function createScoresWindow() {
   if (scoresWindow && !scoresWindow.isDestroyed()) {
@@ -109,7 +120,7 @@ function createScoresWindow() {
     transparent: true,
     frame: false,
     parent: mainWindow,  //Hace que sea ventana hija
-    modal: true,         //ERROR?
+    modal: false,         //ERROR?
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -122,7 +133,7 @@ function createScoresWindow() {
       extraHeaders: 'pragma: no-cache\n',
     });
   } else {
-    scoresWindow.loadFile(path.join(__dirname, 'dist/scores.html'));
+    scoresWindow.loadFile(path.join(__dirname, 'scoresfolder/scores.html'));
   }
 
   scoresWindow.on('closed', () => {
@@ -179,6 +190,8 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {

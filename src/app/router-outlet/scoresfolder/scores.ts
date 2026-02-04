@@ -1,19 +1,18 @@
-import { Component, signal, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
-
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.html',
+  selector: 'app-scores',
+  standalone: true,
+  templateUrl: './scores.html',
+  styleUrls: ['./scores.css']
 })
-export class App implements AfterViewInit {
-  protected readonly title = signal('electron-cookie-clicker');
-  platformId = inject(PLATFORM_ID);
+export class Scores implements AfterViewInit {
+  protected readonly title = signal('Puntuaciones');
+
 //Botón click
   ngAfterViewInit(): void {
-    //si no me da error ssr
-    if (!isPlatformBrowser(this.platformId)) return;
+    console.log('Scores CARGADO');
     const btn = document.getElementById('click-button');
     if (btn) {
       btn.addEventListener('click', () => {
@@ -40,10 +39,6 @@ export class App implements AfterViewInit {
           const btn = document.getElementById('click-button') as HTMLButtonElement | null;
           if (btn) btn.disabled = true;
         });
-        api.onMain('enable-button', () => {
-  const btn = document.getElementById('click-button') as HTMLButtonElement | null;
-  if (btn) btn.disabled = false;
-});
       }
     } catch (e) {
       console.error('Error registrando listener de update-display', e);
@@ -60,41 +55,16 @@ export class App implements AfterViewInit {
         }
       });
     }
-
     // Close window
     const closeBtn = document.getElementById('close-window');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
         try {
-          (window as any).electronAPI.closeWindow();
+          (window as any).electronAPI.closeScoresWindow();
         } catch (e) {
-          console.error('Error closing window', e);
+          console.error('Error cerrando la ventana', e);
         }
       });
     }
-    //restart-button
-    const restartBtn = document.getElementById('restart-button');
-    if (restartBtn) {
-      restartBtn.addEventListener('click', () => {
-        try {
-          (window as any).electronAPI.restartGame();
-        } catch (e) {
-          console.error('Error restart', e);
-        }
-      });
-    }
-
-    //puntuaciones-button
-    const scoresBtn = document.getElementById('puntuaciones-button');
-    if (scoresBtn) {
-      scoresBtn.addEventListener('click', () => {
-        try {
-          (window as any).electronAPI.openScores();
-        } catch (e) {
-          console.error('Error abriendo scores', e);
-        }
-      });
-    }
-
   }
 }
