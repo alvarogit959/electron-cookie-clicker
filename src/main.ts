@@ -1,6 +1,10 @@
+// main.ts
 import { bootstrapApplication } from '@angular/platform-browser';
-import { HomeComponent } from './app/router-outlet/homepage/home';
-import { appConfig } from './app/app.config';
+import { AppRoot } from './app/app-root';
+import { provideRouter } from '@angular/router';
+import { routes } from './app/app.routes';
 
-bootstrapApplication(HomeComponent, appConfig).catch(err => console.error(err));
+bootstrapApplication(AppRoot, {
+  providers: [provideRouter(routes)],
+});
 

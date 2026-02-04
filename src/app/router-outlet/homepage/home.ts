@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-root',
   standalone: true,
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
@@ -11,7 +11,13 @@ import { Router } from '@angular/router';
 export class HomeComponent implements AfterViewInit {
   protected readonly title = signal('electron-cookie-clicker');
   private platformId = inject(PLATFORM_ID);
-  private router = inject(Router);
+
+  constructor(private router: Router) {}
+
+  goToScores() {
+    console.log('Navigating to Scores...');
+    this.router.navigate(['/scores']);
+  }
 
   ngAfterViewInit(): void {
     // Solo ejecutar en navegador
