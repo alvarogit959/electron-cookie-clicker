@@ -1,13 +1,12 @@
 import { Component, signal, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './home.html',
-  styleUrls: ['./home.css']
+  styleUrls: ['./home.css'],
 })
 export class HomeComponent implements AfterViewInit {
   protected readonly title = signal('electron-cookie-clicker');
@@ -15,89 +14,59 @@ export class HomeComponent implements AfterViewInit {
   private router = inject(Router);
 
   ngAfterViewInit(): void {
+    // Solo ejecutar en navegador
     if (!isPlatformBrowser(this.platformId)) return;
 
-    const electronAPI = (window as any).electronAPI;
+    const api = (window as any).electronAPI;
 
-    // Botón CLICK
-    const btn = document.getElementById('click-button');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        try {
-          electronAPI.clickButton('button-clicked');
-        } catch (e) {
-          console.error('electronAPI not available', e);
-        }
-      });
-    }
+    // Click button
+    document.getElementById('click-button')?.addEventListener('click', () => {
+      console.log('CLICK button pressed');
+      api?.clickButton('button-clicked');
+    });
 
-    if (electronAPI && typeof electronAPI.onMain === 'function') {
-      electronAPI.onMain('update-display', (_event: any, message: string) => {
-        const display = document.getElementById('display-text');
-        if (display) display.textContent = message;
-      });
-
-      electronAPI.onMain('from-main', (_event: any, message: string) => {
-        const timer = document.getElementById('timer-text');
-        if (timer) (timer as HTMLElement).textContent = message;
-      });
-
-      electronAPI.onMain('disable-button', () => {
-        const clickBtn = document.getElementById('click-button') as HTMLButtonElement | null;
-        if (clickBtn) clickBtn.disabled = true;
-      });
-
-      electronAPI.onMain('enable-button', () => {
-        const clickBtn = document.getElementById('click-button') as HTMLButtonElement | null;
-        if (clickBtn) clickBtn.disabled = false;
-      });
-    }
-
-//MIN
-    const minBtn = document.getElementById('min-window');
-    if (minBtn) {
-      minBtn.addEventListener('click', () => {
-        try {
-          electronAPI.minimizeWindow();
-        } catch (e) {
-          console.error('Error minimizing window', e);
-        }
-      });
-    }
-
-//CERRAR
-    const closeBtn = document.getElementById('close-window');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        try {
-          electronAPI.closeWindow();
-        } catch (e) {
-          console.error('Error closing window', e);
-        }
-      });
-    }
-
-//Restart
-    const restartBtn = document.getElementById('restart-button');
-    if (restartBtn) {
-      restartBtn.addEventListener('click', () => {
-        try {
-          electronAPI.restartGame();
-        } catch (e) {
-          console.error('Error restart', e);
-        }
-      });
-    }
-
-//Scores
+    // Scores button → abrir ventana de Scores en Electron
     const scoresBtn = document.getElementById('puntuaciones-button');
-    if (scoresBtn) {
-      scoresBtn.addEventListener('click', () => {
-        try {
-          this.router.navigate(['/scores']);
-        } catch (e) {
-          console.error('Error navegando a scores', e);
-        }
+    scoresBtn?.addEventListener('click', () => {
+      console.log('Scores button pressed');
+      this.router.navigate(['/scores']);
+    });
+
+    // Minimize window
+    document.getElementById('min-window')?.addEventListener('click', () => {
+      api?.minimizeWindow();
+    });
+
+    // Close window
+    document.getElementById('close-window')?.addEventListener('click', () => {
+      api?.closeWindow();
+    });
+
+    // Restart game
+    document.getElementById('restart-button')?.addEventListener('click', () => {
+      api?.restartGame();
+    });
+
+    // Listeners desde main process
+    if (api && typeof api.onMain === 'function') {
+      api.onMain('update-display', (_e: any, msg: string) => {
+        const display = document.getElementById('display-text');
+        if (display) display.textContent = msg;
+      });
+
+      api.onMain('from-main', (_e: any, msg: string) => {
+        const timer = document.getElementById('timer-text');
+        if (timer) timer.textContent = msg;
+      });
+
+      api.onMain('disable-button', () => {
+        const btn = document.getElementById('click-button') as HTMLButtonElement | null;
+        if (btn) btn.disabled = true;
+      });
+
+      api.onMain('enable-button', () => {
+        const btn = document.getElementById('click-button') as HTMLButtonElement | null;
+        if (btn) btn.disabled = false;
       });
     }
   }

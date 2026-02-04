@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './scores.html',
   styleUrls: ['./scores.css']
 })
-export class Scores implements AfterViewInit {
+export class ScoresComponent implements AfterViewInit {
   protected readonly title = signal('Puntuaciones');
 
 //Botón click

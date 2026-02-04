@@ -142,9 +142,10 @@ function createScoresWindow() {
 }
 
 //Min window
+
 ipcMain.on('puntuaciones-button', (event) => {
   console.log('Recibido: puntuaciones-button');
-  createScoresWindow();
+  //createScoresWindow();
 });
 
 

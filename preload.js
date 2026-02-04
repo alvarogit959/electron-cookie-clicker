@@ -3,28 +3,29 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   platform: process.platform,
   // Para el contador
- clickButton: (message) => ipcRenderer.send('click-button', message),
+  clickButton: (message) => ipcRenderer.send('click-button', message),
   // Para recibir actualizaciones
-onMain: (channel, callback) => ipcRenderer.on(channel, callback),
- openScores: () => ipcRenderer.send('puntuaciones-button'),
+  minimizeWindow: () => ipcRenderer.send('minimize-window'),
+  closeWindow: () => ipcRenderer.send('close-window'),
+  closeScoresWindow: () => ipcRenderer.send('close-scores-window'),
+  openScores: () => ipcRenderer.send('puntuaciones-button'),
   restartGame: () => ipcRenderer.send('restart-button'),
+  onMain: (channel, func) => ipcRenderer.on(channel, func),
   // Navegación
   /*
   navigateToScores: () => {
     console.log('Enviando: puntuaciones-button');
     ipcRenderer.send('puntuaciones-button');
   },*/
-  
+/*
   navigateToApp: () => {
     console.log('Enviando: return-button');
     ipcRenderer.send('return-button');
-  },
-  
+  },*/
+
   // Control de ventanas
- minimizeWindow: () => ipcRenderer.send('minimize-window'),
-  closeWindow: () => ipcRenderer.send('close-window'),
-  closeScoresWindow: () => ipcRenderer.send('close-scores-window'),
-  
+
+
   // Para obtener puntuaciones del servidor
   fetchScores: async () => {
     try {
@@ -35,7 +36,7 @@ onMain: (channel, callback) => ipcRenderer.on(channel, callback),
       return [];
     }
   },
-  
+
   // Para guardar puntuación
   saveScore: async (name, clicks) => {
     try {
@@ -51,5 +52,5 @@ onMain: (channel, callback) => ipcRenderer.on(channel, callback),
       console.error('Error saving score:', error);
       return null;
     }
-  }
+  },
 });
