@@ -20,40 +20,37 @@ export class HomeComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Solo ejecutar en navegador
+//navegador
     if (!isPlatformBrowser(this.platformId)) return;
 
     const api = (window as any).electronAPI;
 
-    // Click button
     document.getElementById('click-button')?.addEventListener('click', () => {
       console.log('CLICK button pressed');
       api?.clickButton('button-clicked');
     });
-
-    // Scores button abrir ventana de Scores en Electron
+//electron
     const scoresBtn = document.getElementById('puntuaciones-button');
     scoresBtn?.addEventListener('click', () => {
       console.log('Scores button pressed');
       this.router.navigate(['/scores']);
     });
 
-    // Minimize window
+//Min
     document.getElementById('min-window')?.addEventListener('click', () => {
       api?.minimizeWindow();
     });
 
-    // Close window
+//Close
     document.getElementById('close-window')?.addEventListener('click', () => {
       api?.closeWindow();
     });
 
-    // Restart game
+//Restart
     document.getElementById('restart-button')?.addEventListener('click', () => {
       api?.restartGame();
     });
 
-    // Listeners desde main process
     if (api && typeof api.onMain === 'function') {
       api.onMain('update-display', (_e: any, msg: string) => {
         const display = document.getElementById('display-text');
