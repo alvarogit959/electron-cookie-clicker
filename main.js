@@ -18,19 +18,23 @@ const path = require('path');
 
 //SI DA ERROR PRIMERO: netstat -ano | findstr :4300       LUEGO: tasklist | findstr 12345
 
+
+//cd a carpeta adecuada!
+//node serverCookie.js 
+//npm run electron:dev 
+
 let mainWindow;
 let scoresWindow = null;
 let clickCount = 0;
 function getUrl(route = '') {
   const base = `http://localhost:4300`;
-  // Para Electron, usa hash navigation
+  //Para Electron
   return route ? `${base}/#${route}` : base;
 }
-// Temporizador principal (30s)
 function timerDown() {
+  const axios = require('axios');
   console.log('timerDown iniciado');
-  let time = 5; //AJUSTAR TIEMPO AL FINAL DEL TIMER TAMBIEN
-  // Enviar valor inicial inmediatamente
+  let time = 10; //AJUSTAR TIEMPO AL FINAL DEL TIMER TAMBIEN
   if (mainWindow && mainWindow.webContents)
     mainWindow.webContents.send('from-main', `Tiempo restante: ${time}`);
   console.log(`Tiempo restante: ${time}`);
@@ -43,18 +47,28 @@ function timerDown() {
     console.log(`Tiempo restante: ${time}`);
   }, 1000);
 
-  setTimeout(() => {
-    clearInterval(timer);
-    if (mainWindow && mainWindow.webContents) {
-      mainWindow.webContents.send('from-main', 'Tiempo restante: 0');
-      mainWindow.webContents.send(
-        'update-display',
-        `¡Tiempo terminado!\n Has hecho ${clickCount} clicks.`,
-      );
-      console.log(`¡Tiempo terminado! Has hecho ${clickCount} clicks.`);
-      mainWindow.webContents.send('disable-button');
+setTimeout(async () => {
+
+  clearInterval(timer);
+
+  if (mainWindow && mainWindow.webContents) {
+
+    mainWindow.webContents.send('disable-button');
+
+    try {
+      await axios.post('http://localhost:5000/cookies', {
+        clicks: clickCount
+      });
+
+      console.log('Score guardado en Mongo');
+
+    } catch (err) {
+      console.error('Error guardando score', err.message);
     }
-  }, 6000);
+
+  }
+//CAMBIAR TIEMPO AQUI TAMBIEN!!!!!!!!!!---------
+}, 11000);
 }
 
 let starting = false;
@@ -157,7 +171,7 @@ ipcMain.on('restart-button', () => {
 
   if (mainWindow && mainWindow.webContents) {
     mainWindow.webContents.send('update-display', 'Número de clicks: 0');
-    mainWindow.webContents.send('from-main', 'Tiempo restante: 30');
+    mainWindow.webContents.send('from-main', 'Tiempo restante: 10');
     mainWindow.webContents.send('enable-button');
   }
 });

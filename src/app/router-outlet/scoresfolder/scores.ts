@@ -1,74 +1,75 @@
-import { Component, signal, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, signal, AfterViewInit, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-scores',
   standalone: true,
   templateUrl: './scores.html',
   styleUrls: ['./scores.css'],
 })
-export class ScoresComponent implements AfterViewInit {
+export class ScoresComponent implements AfterViewInit, OnInit {
+
   protected readonly title = signal('Puntuaciones');
 
   constructor(private router: Router) {}
-  goToHome() {
-    console.log('Volviendo a home test');
-    this.router.navigate(['/home']);
+
+//Angular
+
+  ngOnInit(): void {
+    this.loadScores();
   }
-  //Botón click
+
   ngAfterViewInit(): void {
 
     const api = (window as any).electronAPI;
 
-
-
-
     console.log('Scores CARGADO');
-    const btn = document.getElementById('click-button');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        try {
-          (window as any).electronAPI.clickButton('button-clicked');
-        } catch (e) {
-          console.error('electronAPI not available', e);
-        }
-      });
-    }
 
-    //Actualizar display contador
-    try {
-      const api = (window as any).electronAPI;
-      if (api && typeof api.onMain === 'function') {
-        api.onMain('update-display', (_event: any, message: string) => {
-          const display = document.getElementById('display-text');
-          if (display) display.textContent = message;
-        });
-        api.onMain('from-main', (_event: any, message: string) => {
-          const timer = document.getElementById('timer-text');
-          if (timer) (timer as HTMLElement).textContent = message;
-        });
-        api.onMain('disable-button', () => {
-          const btn = document.getElementById('click-button') as HTMLButtonElement | null;
-          if (btn) btn.disabled = true;
-        });
-      }
-    } catch (e) {
-      console.error('Error registrando listener de update-display', e);
-    }
-    //RETURN
-    const returnBtn = document.getElementById('return-button');
-    returnBtn?.addEventListener('click', () => {
-      console.log('return pressedd');
-      this.router.navigate(['/home']);
-    });
-    // Minimize window
+//minimize
     document.getElementById('min-window')?.addEventListener('click', () => {
       api?.minimizeWindow();
     });
 
-    // Close window
+//Cerrar
     document.getElementById('close-window')?.addEventListener('click', () => {
       api?.closeWindow();
     });
   }
+
+
+  goToHome() {
+    this.router.navigate(['/home']);
+  }
+
+
+//TEST
+  async loadScores() {
+
+    try {
+      const res = await fetch('http://localhost:5000/cookies');
+      const scores = await res.json();
+
+      const list = document.getElementById('scores-list');
+
+      if (list) {
+
+        list.innerHTML = '';
+
+        scores.forEach((score: any, index: number) => {
+
+          const div = document.createElement('div');
+          div.textContent = `#${index + 1} - ${score.clicks} clicks`;
+
+          list.appendChild(div);
+
+        });
+
+      }
+
+    } catch (error) {
+      console.error('Error cargando ranking', error);
+    }
+
+  }
+
 }

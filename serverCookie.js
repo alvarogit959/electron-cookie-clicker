@@ -31,8 +31,10 @@ mongoose.connect('mongodb+srv://alvarod_db_user:ChangeMe@clustervending.o3ch2ve.
   .catch(err => console.error('Error de conexión:', err));
 
 const scoreSchema = new mongoose.Schema({
-  name: String, 
-  clicks: Number
+  clicks: Number,
+  createdAt: { type: Date, default: Date.now }
+ /* name: String, 
+  clicks: Number*/
 });
 const Score = mongoose.model('Score', scoreSchema);
  
@@ -46,37 +48,34 @@ app.get('/health', (req, res) => {
 //Obtener todos los sudokus
 app.post('/cookies', async (req, res) => {
   try {
-    const { name, time, difficulty } = req.body;
-    //test luego borrar!
-        if (!name || time === undefined || !difficulty) {
-      return res.status(400).json({ error: 'Faltan campos: name, time o difficulty' });
+    const { clicks } = req.body;
+
+    if (clicks === undefined) {
+      return res.status(400).json({ error: 'Falta clicks' });
     }
-    ///
-    const newScore = new Score({
-      name: name,
-      clicks: clicks
-    });
-    
+
+    const newScore = new Score({ clicks });
+
     await newScore.save();
-   console.log('Puntaje guardado en BD:', newScore);
-   res.status(201).json({
-      message: 'Puntaje guardado exitosamente',
-      id: newScore._id
-    });
+
+    res.status(201).json(newScore);
 
   } catch (error) {
-    console.error('Error guardando:', error);
     res.status(500).json({ error: 'Error guardando' });
   }
 });
+
 app.get('/cookies', async (req, res) => {
   try {
-    const scores = await Score.find().sort({ time: 1 });
+    const scores = await Score.find().sort({ clicks: -1 })
+//LIMITAR A 10
+    .limit(10);
     res.json(scores);
   } catch (error) {
-    res.status(500).json({ error: 'Error en el get' });
+    res.status(500).json({ error: 'Error en GET' });
   }
 });
+
 
 //INICAR SERVIDOR ==================== IP ADECUADA??
 const PORT = 5000;
