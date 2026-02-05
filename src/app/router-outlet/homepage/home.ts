@@ -31,7 +31,7 @@ export class HomeComponent implements AfterViewInit {
       api?.clickButton('button-clicked');
     });
 
-    // Scores button → abrir ventana de Scores en Electron
+    // Scores button abrir ventana de Scores en Electron
     const scoresBtn = document.getElementById('puntuaciones-button');
     scoresBtn?.addEventListener('click', () => {
       console.log('Scores button pressed');

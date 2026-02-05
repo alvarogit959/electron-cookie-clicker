@@ -1,17 +1,28 @@
-import { Component, signal, AfterViewInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-
+import { Component, signal, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-scores',
   standalone: true,
   templateUrl: './scores.html',
-  styleUrls: ['./scores.css']
+  styleUrls: ['./scores.css'],
 })
 export class ScoresComponent implements AfterViewInit {
   protected readonly title = signal('Puntuaciones');
 
-//Botón click
+  constructor(private router: Router) {}
+  goToHome() {
+    console.log('Volviendo a home test');
+    this.router.navigate(['/home']);
+  }
+  //Botón click
   ngAfterViewInit(): void {
+
+    const api = (window as any).electronAPI;
+
+
+
+
     console.log('Scores CARGADO');
     const btn = document.getElementById('click-button');
     if (btn) {
@@ -23,7 +34,8 @@ export class ScoresComponent implements AfterViewInit {
         }
       });
     }
-//Actualizar display contador
+
+    //Actualizar display contador
     try {
       const api = (window as any).electronAPI;
       if (api && typeof api.onMain === 'function') {
@@ -43,28 +55,20 @@ export class ScoresComponent implements AfterViewInit {
     } catch (e) {
       console.error('Error registrando listener de update-display', e);
     }
-
+    //RETURN
+    const returnBtn = document.getElementById('return-button');
+    returnBtn?.addEventListener('click', () => {
+      console.log('return pressedd');
+      this.router.navigate(['/home']);
+    });
     // Minimize window
-    const minBtn = document.getElementById('min-window');
-    if (minBtn) {
-      minBtn.addEventListener('click', () => {
-        try {
-          (window as any).electronAPI.minimizeWindow();
-        } catch (e) {
-          console.error('Error minimizing window', e);
-        }
-      });
-    }
+    document.getElementById('min-window')?.addEventListener('click', () => {
+      api?.minimizeWindow();
+    });
+
     // Close window
-    const closeBtn = document.getElementById('close-window');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        try {
-          (window as any).electronAPI.closeScoresWindow();
-        } catch (e) {
-          console.error('Error cerrando la ventana', e);
-        }
-      });
-    }
+    document.getElementById('close-window')?.addEventListener('click', () => {
+      api?.closeWindow();
+    });
   }
 }

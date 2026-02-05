@@ -5,5 +5,6 @@ import { ScoresComponent } from './router-outlet/scoresfolder/scores';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'scores', component: ScoresComponent },
+  { path: 'home', component: HomeComponent },
 ];
 

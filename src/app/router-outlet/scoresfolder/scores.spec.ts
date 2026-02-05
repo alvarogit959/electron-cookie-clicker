@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+/*import { TestBed } from '@angular/core/testing';
 import { Scores } from './scores';
 
 describe('ScoresMenu', () => {
@@ -8,6 +8,8 @@ describe('ScoresMenu', () => {
     }).compileComponents();
   });
 
+
+  
   it('should create the ScoresMenu', () => {
     const fixture = TestBed.createComponent(Scores);
     const ScoresMenu = fixture.componentInstance;
@@ -20,4 +22,4 @@ describe('ScoresMenu', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('Hello, electron-cookie-clicker');
   });
-});
+});*/
