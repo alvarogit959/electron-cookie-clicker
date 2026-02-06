@@ -1,5 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { enviarMensajeTelegram } = require('./src/utils/telegram');
+
 //npm install
 //npm install -g @angular/cli@21.0.0
 //npm install -g @angular/cli@latest
@@ -48,27 +50,22 @@ function timerDown() {
   }, 1000);
 
 setTimeout(async () => {
-
   clearInterval(timer);
+  mainWindow.webContents.send('disable-button');
 
-  if (mainWindow && mainWindow.webContents) {
+  try {
+    await axios.post('http://localhost:5000/cookies', { clicks: clickCount });
+    console.log('Score guardado en Mongo');
 
-    mainWindow.webContents.send('disable-button');
+    const mensaje = `Nuevo Score registrado:\nNúmero de clicks: ${clickCount}\nTiempo: 10s`;
+    await enviarMensajeTelegram(mensaje);
+    console.log('Mensaje Telegram enviado');
 
-    try {
-      await axios.post('http://localhost:5000/cookies', {
-        clicks: clickCount
-      });
-
-      console.log('Score guardado en Mongo');
-
-    } catch (err) {
-      console.error('Error guardando score', err.message);
-    }
-
+  } catch (err) {
+    console.error('Error guardando score o enviando Telegram:', err.response?.data || err.message || err);
   }
-//CAMBIAR TIEMPO AQUI TAMBIEN!!!!!!!!!!---------
 }, 11000);
+
 }
 
 let starting = false;

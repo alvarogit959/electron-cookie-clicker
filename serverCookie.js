@@ -1,7 +1,19 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
+
+const { inngest } = require('./src/inngest/client');
+const { serve } = require('inngest/express');
+const { scoreRegistrado } = require('./src/inngest/functions/scoreWorkflow');
+
+const { enviarMensajeTelegram, obtenerActualizaciones } = require('./src/utils/telegram');
+
+
+obtenerActualizaciones().then(console.log);
+enviarMensajeTelegram("Test");
 
 const app = express();
 app.use(cors());
@@ -37,7 +49,12 @@ const scoreSchema = new mongoose.Schema({
   clicks: Number*/
 });
 const Score = mongoose.model('Score', scoreSchema);
- 
+
+ app.use('/api/inngest', serve({
+  client: inngest,
+  functions: [scoreRegistrado]
+}));
+
 app.get('/', (req, res) => {
   res.send('Servidor scoresCoockies. Rutas: /cookies');
 });
@@ -45,7 +62,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'running', timestamp: new Date() });
 });
 
-//Obtener todos los sudokus
+//Obtener todo
 app.post('/cookies', async (req, res) => {
   try {
     const { clicks } = req.body;
@@ -55,15 +72,25 @@ app.post('/cookies', async (req, res) => {
     }
 
     const newScore = new Score({ clicks });
-
     await newScore.save();
+
+//INNCEST
+    await inngest.send({
+      name: 'score/registrado',
+      data: {
+        clicks,
+        createdAt: newScore.createdAt
+      }
+    });
 
     res.status(201).json(newScore);
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Error guardando' });
   }
 });
+
 
 app.get('/cookies', async (req, res) => {
   try {
